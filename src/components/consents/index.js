@@ -1,10 +1,16 @@
 import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 
-const Consents = () => (
-  <div>
-    <h1>Give consent</h1>
-    <p>I agree to:</p>
-  </div>
-)
+const useStyles = makeStyles(theme => ({}))
+
+const Consents = () => {
+  const classes = useStyles()
+
+  return (
+    <div>
+      <p>I agree to:</p>
+    </div>
+  )
+}
 
 export default Consents

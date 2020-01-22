@@ -15,8 +15,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth
+    zIndex: theme.zIndex.drawer + 1
   },
   drawer: {
     width: drawerWidth,
@@ -30,7 +29,8 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3)
-  }
+  },
+  toolbar: theme.mixins.toolbar
 }))
 
 const SideMenu = () => {
@@ -45,11 +45,13 @@ const SideMenu = () => {
       }}
       anchor="left">
       <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        <MenuItem title="Give Consent" to="/give-consent" />
-        <MenuItem title="Consents" to="/collected-consents" />
-      </List>
+      <nav>
+        <Divider />
+        <List>
+          <MenuItem title="Give Consent" to="/give-consent" />
+          <MenuItem title="Consents" to="/collected-consents" />
+        </List>
+      </nav>
     </Drawer>
   )
 }
