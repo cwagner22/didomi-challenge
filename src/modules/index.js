@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import counter from './counter'
+import consent from './consent'
 
 export default combineReducers({
-  counter
+  consent
 })
