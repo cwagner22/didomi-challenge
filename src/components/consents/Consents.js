@@ -9,23 +9,19 @@ import TableRow from '@material-ui/core/TableRow'
 import TableFooter from '@material-ui/core/TableFooter'
 import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { getConsents } from '../../modules/consent'
 import { consents } from '../../modules/data'
 
 const useStyles = makeStyles(theme => ({}))
 
-const Consents = props => {
-  const { userConsents } = props
+const Consents = () => {
   const classes = useStyles()
+  const userConsents = useSelector(state => state.consent.userConsents)
+  const dispatch = useDispatch()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(2)
-
-  // const handleChange = name => event => {
-  //   setValues({ ...values, [name]: event.target.value })
-  // }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -37,8 +33,9 @@ const Consents = props => {
   }
 
   useEffect(() => {
-    props.getConsents()
-  }, [])
+    // Get all user consents from API
+    dispatch(getConsents())
+  }, [dispatch])
 
   const getConsentDescription = consentId =>
     consents.find(c => c.id === consentId).description
@@ -75,7 +72,6 @@ const Consents = props => {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[2, 10, 25]}
-                // component="div"
                 count={userConsents.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -90,16 +86,4 @@ const Consents = props => {
   )
 }
 
-const mapStateToProps = ({ consent }) => ({
-  userConsents: consent.userConsents
-})
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      getConsents
-    },
-    dispatch
-  )
-
-export default connect(mapStateToProps, mapDispatchToProps)(Consents)
+export default Consents

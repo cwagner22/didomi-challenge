@@ -1,9 +1,11 @@
+// List of consents with their description
 export const consents = [
   { id: 0, description: 'Receive newsletter' },
   { id: 1, description: 'Be shown targeted ads' },
   { id: 2, description: 'Contribute to anonymous visit statistics' }
 ]
 
+// User consents test data
 export let userConsents = [
   {
     name: 'Brad Gibson',

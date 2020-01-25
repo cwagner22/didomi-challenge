@@ -2,8 +2,7 @@ import React from 'react'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { addConsent, updateConsent } from '../../modules/consent'
 import PropTypes from 'prop-types'
@@ -44,6 +43,11 @@ const useStyles = makeStyles(theme => ({
 const GiveConsent = props => {
   const classes = useStyles()
   const history = useHistory()
+  const dispatch = useDispatch()
+  const name = useSelector(state => state.consent.name)
+  const email = useSelector(state => state.consent.email)
+  const myConsents = useSelector(state => state.consent.myConsents)
+  const added = useSelector(state => state.consent.added)
 
   const renderCheckBoxes = () => {
     const { consents } = props
@@ -66,19 +70,20 @@ const GiveConsent = props => {
   }
 
   const initialValues = {
-    name: props.name,
-    email: props.email,
-    consents: props.myConsents
+    name: name,
+    email: email,
+    consents: myConsents
   }
 
   async function onSubmit(values) {
-    const action = props.added ? props.updateConsent : props.addConsent
-    action(values).then(() => {
+    // Submit consents to API
+    const action = added ? updateConsent : addConsent
+    dispatch(action(values)).then(() => {
       history.push('/collected-consents')
     })
   }
 
-  // We define our schema based on the same keys as our form:
+  // We define our schema based on the same keys as our form
   const schema = Yup.object().shape({
     name: Yup.string().required(),
     email: Yup.string()
@@ -87,7 +92,7 @@ const GiveConsent = props => {
     consents: Yup.array().min(1)
   })
 
-  // Run the makeValidate function...
+  // Run the makeValidate function
   const validate = makeValidate(schema)
 
   return (
@@ -134,21 +139,4 @@ GiveConsent.propTypes = {
   consents: PropTypes.array.isRequired
 }
 
-const mapStateToProps = ({ consent }) => ({
-  isIncrementing: consent.isIncrementing,
-  name: consent.name,
-  email: consent.email,
-  myConsents: consent.myConsents,
-  added: consent.added
-})
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      addConsent,
-      updateConsent
-    },
-    dispatch
-  )
-
-export default connect(mapStateToProps, mapDispatchToProps)(GiveConsent)
+export default GiveConsent

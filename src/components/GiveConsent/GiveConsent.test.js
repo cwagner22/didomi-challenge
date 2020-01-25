@@ -29,14 +29,13 @@ test('submit button disabled until all fields are set', async () => {
   )
   const getButton = async () =>
     (await waitForElement(() => getByText(/Give Consent/i))).closest('button')
-  await wait()
+
   // Check the submit button is initially disabled
   expect(await getButton()).toBeDisabled()
 
   // Still disabled after entering name and email
   await userEvent.type(getByLabelText(/Name/i), 'Chris W')
   await userEvent.type(getByLabelText(/Email/i), 'chris@example.com')
-  await wait()
 
   expect(await getButton()).toBeDisabled()
 

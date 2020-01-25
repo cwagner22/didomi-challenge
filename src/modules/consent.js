@@ -1,67 +1,34 @@
-import api, { mockConsent } from './api'
+import api from './api'
 
-export const ADD_CONSENT_REQUESTED = 'counter/ADD_CONSENT_REQUESTED'
+// Action Types
 export const ADD_CONSENT = 'counter/ADD_CONSENT'
-export const UPDATE_CONSENT_REQUESTED = 'counter/UPDATE_CONSENT_REQUESTED'
 export const UPDATE_CONSENT = 'counter/UPDATE_CONSENT'
-export const CONSENTS_REQUESTED = 'counter/CONSENTS_REQUESTED'
-export const GET_CONSENTS_SUCCESS = 'counter/GET_CONSENTS_SUCCESS'
+export const GET_CONSENTS = 'counter/GET_CONSENTS'
 
 const initialState = {
   name: '',
   email: '',
   myConsents: [],
   userConsents: [],
-  isAdding: false,
   added: false
 }
 
+// Reducers
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_CONSENT_REQUESTED: {
-      return {
-        ...state,
-        isAdding: true
-      }
-    }
-
-    case ADD_CONSENT: {
-      const { consent } = action.payload
-
-      return {
-        ...state,
-        allConsents: [...state.myConsents, consent],
-        name: consent.name,
-        email: consent.email,
-        consents: consent.consents,
-        isAdding: false,
-        added: true
-      }
-    }
-
+    case ADD_CONSENT:
     case UPDATE_CONSENT: {
       const { consent } = action.payload
-
-      const allConsents = state.userConsents.map((item, index) => {
-        if (item.email === consent.email) {
-          // Update consent
-          return consent
-        }
-        return item
-      })
-
       return {
         ...state,
-        allConsents: allConsents,
+        myConsents: consent.consents,
         name: consent.name,
         email: consent.email,
-        consents: consent.consents,
-        isAdding: false,
         added: true
       }
     }
 
-    case GET_CONSENTS_SUCCESS: {
+    case GET_CONSENTS: {
       const { userConsents } = action.payload
       return {
         ...state,
@@ -74,16 +41,11 @@ export default (state = initialState, action) => {
   }
 }
 
+// Thunk Action Creators
 export const addConsent = consent => async dispatch => {
-  dispatch({
-    type: ADD_CONSENT_REQUESTED
-  })
-
   return api
     .post('/consent', consent)
     .then(response => {
-      mockConsent(consent)
-
       dispatch({
         type: ADD_CONSENT,
         payload: { consent }
@@ -95,15 +57,9 @@ export const addConsent = consent => async dispatch => {
 }
 
 export const updateConsent = consent => async dispatch => {
-  dispatch({
-    type: UPDATE_CONSENT_REQUESTED
-  })
-
   return api
     .put('/consent', consent)
     .then(response => {
-      mockConsent(consent)
-
       dispatch({
         type: UPDATE_CONSENT,
         payload: { consent }
@@ -115,15 +71,11 @@ export const updateConsent = consent => async dispatch => {
 }
 
 export const getConsents = () => async dispatch => {
-  dispatch({
-    type: CONSENTS_REQUESTED
-  })
-
   return api
     .get('/consents')
     .then(response => {
       dispatch({
-        type: GET_CONSENTS_SUCCESS,
+        type: GET_CONSENTS,
         payload: { userConsents: response.data }
       })
     })

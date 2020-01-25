@@ -1,20 +1,42 @@
-<p align="center"><a href="https://medium.com/@notrab/getting-started-with-create-react-app-redux-react-router-redux-thunk-d6a19259f71f"><img src="https://i.imgur.com/PATsTx2.png" title="View tutorial" alt="React, React Router, Redux and Redux Thunk" width="900"></a></p>
+# Didomi Code Challenge
 
-* Tutorial: [Getting started with create-react-app, Redux, React Router & Redux Thunk](https://medium.com/@notrab/getting-started-with-create-react-app-redux-react-router-redux-thunk-d6a19259f71f)
-* [Demo](https://create-react-app-redux.now.sh) 🙌
+Built with:
+
+- React
+- Redux
+- Redux Thunk
+- Material-UI
+- React Final Form
 
 ## Installation
 
 ```bash
-git clone https://github.com/notrab/create-react-app-redux.git
-cd create-react-app-redux
+git clone https://github.com/cwagner22/didomi-challenge.git
+cd didomi-challenge
 yarn
 ```
 
-## Get started
+## Run the app
 
 ```bash
 yarn start
 ```
 
-This boilerplate is built using [create-react-app](https://github.com/facebook/create-react-app) so you will want to read the User Guide for more goodies.
+Runs the app in the development mode.  
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## Test
+
+```bash
+yarn test
+```
+
+Launches the test runner in the interactive watch mode.
+
+## Build
+
+```bash
+yarn build
+```
+
+Builds the app for production to the `build` folder.
