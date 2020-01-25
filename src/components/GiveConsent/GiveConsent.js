@@ -4,8 +4,8 @@ import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { addConsent } from '../../modules/consent'
+import { useHistory } from 'react-router-dom'
+import { addConsent, updateConsent } from '../../modules/consent'
 
 import { Form } from 'react-final-form'
 import { TextField, Checkboxes, makeValidate } from 'mui-rff'
@@ -42,6 +42,7 @@ const useStyles = makeStyles(theme => ({
 
 const GiveConsent = props => {
   const classes = useStyles()
+  const history = useHistory()
 
   const renderCheckBoxes = () => {
     const { consents } = props
@@ -64,21 +65,23 @@ const GiveConsent = props => {
   }
 
   const initialValues = {
-    name: '',
-    email: '',
-    consents: []
+    name: props.name,
+    email: props.email,
+    consents: props.myConsents
   }
 
   async function onSubmit(values) {
-    props.addConsent(values).then(() => {
-      props.history.push('/collected-consents')
+    const action = props.added ? props.updateConsent : props.addConsent
+    action(values).then(() => {
+      history.push('/collected-consents')
     })
   }
 
   // We define our schema based on the same keys as our form:
   const schema = Yup.object().shape({
     name: Yup.string().required(),
-    consents: Yup.array().min(1, '')
+    email: Yup.string().email(),
+    consents: Yup.array().min(1)
   })
 
   // Run the makeValidate function...
@@ -93,8 +96,15 @@ const GiveConsent = props => {
         render={({ handleSubmit, values, invalid, submittting }) => (
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <div className={classes.fields}>
-              <TextField label="Name" name="name" variant="outlined" required />
               <TextField
+                id="name-field"
+                label="Name"
+                name="name"
+                variant="outlined"
+                required
+              />
+              <TextField
+                id="email-field"
                 label="Email address"
                 name="email"
                 variant="outlined"
@@ -108,7 +118,7 @@ const GiveConsent = props => {
               type="submit"
               disabled={invalid || submittting}
               className={classes.submit}>
-              Give Consent
+              {props.added ? 'Update Consent' : 'Give Consent'}
             </Button>
           </form>
         )}
@@ -118,18 +128,20 @@ const GiveConsent = props => {
 }
 
 const mapStateToProps = ({ consent }) => ({
-  isIncrementing: consent.isIncrementing
+  isIncrementing: consent.isIncrementing,
+  name: consent.name,
+  email: consent.email,
+  myConsents: consent.myConsents,
+  added: consent.added
 })
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      addConsent
+      addConsent,
+      updateConsent
     },
     dispatch
   )
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(GiveConsent))
+export default connect(mapStateToProps, mapDispatchToProps)(GiveConsent)
