@@ -11,11 +11,14 @@ import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+
 import { getConsents } from '../../modules/consent'
+import { consents } from '../../modules/data'
 
 const useStyles = makeStyles(theme => ({}))
 
 const Consents = props => {
+  const { userConsents } = props
   const classes = useStyles()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(2)
@@ -37,6 +40,9 @@ const Consents = props => {
     props.getConsents()
   }, [])
 
+  const getConsentDescription = consentId =>
+    consents.find(c => c.id === consentId).description
+
   return (
     <React.Fragment>
       <TableContainer component={Paper}>
@@ -51,13 +57,17 @@ const Consents = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.consents
+            {userConsents
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(consent => (
                 <TableRow key={consent.email}>
                   <TableCell>{consent.name}</TableCell>
                   <TableCell>{consent.email}</TableCell>
-                  <TableCell>{consent.consents}</TableCell>
+                  <TableCell>
+                    {consent.consents
+                      .map(consentId => getConsentDescription(consentId))
+                      .join(', ')}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -66,7 +76,7 @@ const Consents = props => {
               <TablePagination
                 rowsPerPageOptions={[2, 10, 25]}
                 // component="div"
-                count={props.consents.length}
+                count={userConsents.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
@@ -81,7 +91,7 @@ const Consents = props => {
 }
 
 const mapStateToProps = ({ consent }) => ({
-  consents: consent.allConsents
+  userConsents: consent.userConsents
 })
 
 const mapDispatchToProps = dispatch =>

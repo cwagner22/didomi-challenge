@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { addConsent, updateConsent } from '../../modules/consent'
+import PropTypes from 'prop-types'
 
 import { Form } from 'react-final-form'
 import { TextField, Checkboxes, makeValidate } from 'mui-rff'
@@ -48,7 +49,7 @@ const GiveConsent = props => {
     const { consents } = props
 
     const checkboxData = consents.map(c => ({
-      label: c.val,
+      label: c.description,
       value: c.id
     }))
 
@@ -80,7 +81,9 @@ const GiveConsent = props => {
   // We define our schema based on the same keys as our form:
   const schema = Yup.object().shape({
     name: Yup.string().required(),
-    email: Yup.string().email(),
+    email: Yup.string()
+      .email()
+      .required(),
     consents: Yup.array().min(1)
   })
 
@@ -125,6 +128,10 @@ const GiveConsent = props => {
       />
     </Paper>
   )
+}
+
+GiveConsent.propTypes = {
+  consents: PropTypes.array.isRequired
 }
 
 const mapStateToProps = ({ consent }) => ({

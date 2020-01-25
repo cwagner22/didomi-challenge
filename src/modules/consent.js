@@ -11,18 +11,19 @@ const initialState = {
   name: '',
   email: '',
   myConsents: [],
-  allConsents: [],
+  userConsents: [],
   isAdding: false,
   added: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_CONSENT_REQUESTED:
+    case ADD_CONSENT_REQUESTED: {
       return {
         ...state,
         isAdding: true
       }
+    }
 
     case ADD_CONSENT: {
       const { consent } = action.payload
@@ -41,13 +42,12 @@ export default (state = initialState, action) => {
     case UPDATE_CONSENT: {
       const { consent } = action.payload
 
-      const allConsents = state.allConsents.map((item, index) => {
-        if (item.email !== consent.email) {
-          // This isn't the item we care about - keep it as-is
-          return item
+      const allConsents = state.userConsents.map((item, index) => {
+        if (item.email === consent.email) {
+          // Update consent
+          return consent
         }
-        // Otherwise, this is the one we want - return an updated value
-        return consent
+        return item
       })
 
       return {
@@ -61,12 +61,13 @@ export default (state = initialState, action) => {
       }
     }
 
-    case GET_CONSENTS_SUCCESS:
-      const { consents } = action.payload
+    case GET_CONSENTS_SUCCESS: {
+      const { userConsents } = action.payload
       return {
         ...state,
-        allConsents: consents
+        userConsents
       }
+    }
 
     default:
       return state
@@ -81,6 +82,8 @@ export const addConsent = consent => async dispatch => {
   return api
     .post('/consent', consent)
     .then(response => {
+      mockConsent(consent)
+
       dispatch({
         type: ADD_CONSENT,
         payload: { consent }
@@ -88,9 +91,6 @@ export const addConsent = consent => async dispatch => {
     })
     .catch(error => {
       console.log(error)
-    })
-    .finally(() => {
-      mockConsent(consent)
     })
 }
 
@@ -102,6 +102,8 @@ export const updateConsent = consent => async dispatch => {
   return api
     .put('/consent', consent)
     .then(response => {
+      mockConsent(consent)
+
       dispatch({
         type: UPDATE_CONSENT,
         payload: { consent }
@@ -109,9 +111,6 @@ export const updateConsent = consent => async dispatch => {
     })
     .catch(error => {
       console.log(error)
-    })
-    .finally(() => {
-      mockConsent(consent)
     })
 }
 
@@ -123,11 +122,9 @@ export const getConsents = () => async dispatch => {
   return api
     .get('/consents')
     .then(response => {
-      const { consents } = response.data
-      console.log(consents)
       dispatch({
         type: GET_CONSENTS_SUCCESS,
-        payload: { consents }
+        payload: { userConsents: response.data }
       })
     })
     .catch(error => {

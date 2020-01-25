@@ -4,9 +4,7 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
 
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MailIcon from '@material-ui/icons/Mail'
-import MenuItem from './menu-item'
+import MenuItem from './MenuItem'
 
 const drawerWidth = 240
 

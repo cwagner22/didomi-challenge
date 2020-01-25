@@ -8,8 +8,9 @@ import Box from '@material-ui/core/Box'
 
 import GiveConsent from '../GiveConsent'
 import Consents from '../Consents'
-import SideMenu from '../side-menu'
-import Header from '../header'
+import SideMenu from '../SideMenu'
+import Header from '../Header'
+import { consents } from '../../modules/data'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,11 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 const App = () => {
   const classes = useStyles()
-  const consents = [
-    { id: 0, val: 'Receive newsletter' },
-    { id: 1, val: 'Be shown targeted ads' },
-    { id: 2, val: 'Contribute to anonymous visit statistics' }
-  ]
+
   return (
     <div>
       <div className={classes.root}>
